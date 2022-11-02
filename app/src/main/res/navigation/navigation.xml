@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/mainMenu">
+    <fragment
+        android:id="@+id/mainMenu"
+        android:name="com.example.proyecto_notas.MainMenu"
+        android:label="fragment_main_menu"
+        tools:layout="@layout/fragment_main_menu" >
+        <action
+            android:id="@+id/action_mainMenu_to_add_note"
+            app:destination="@id/add_note" />
+    </fragment>
+    <fragment
+        android:id="@+id/add_note"
+        android:name="com.example.proyecto_notas.Add_note"
+        android:label="fragment_add_note"
+        tools:layout="@layout/fragment_add_note" >
+        <action
+            android:id="@+id/action_add_note_to_edit_task"
+            app:destination="@id/edit_task" />
+    </fragment>
+    <fragment
+        android:id="@+id/edit_task"
+        android:name="com.example.proyecto_notas.edit_task"
+        android:label="fragment_edit_task"
+        tools:layout="@layout/fragment_edit_task" />
+</navigation>
