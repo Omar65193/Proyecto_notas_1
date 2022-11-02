@@ -10,7 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,6 +23,7 @@ class edit_task : Fragment() {
 
     var textview_date: TextView? = null
     var cal = Calendar.getInstance()
+    val root : View? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,10 +31,18 @@ class edit_task : Fragment() {
         // Inflate the layout for this fragment
 
 
+
         val root = inflater.inflate(R.layout.fragment_edit_task, container, false)
         val btn_date = root.findViewById<Button>(R.id.btn_date)
         textview_date = root.findViewById(R.id.textview_date)
         var txt_hour = root.findViewById<TextView>(R.id.txt_hour)
+
+
+
+        setFragmentResultListener("key") { requestKey, bundle ->
+            val result = bundle.getString("title")
+            root.findViewById<TextView>(R.id.txt_title_edit_task).text = result.toString()
+        }
 
         root.findViewById<Button>(R.id.btn_cancel_edit_task).setOnClickListener{ view : View ->
             view.findNavController().navigate(R.id.action_edit_task_to_add_note)
@@ -46,7 +58,7 @@ class edit_task : Fragment() {
             }
         }
 
-        // Get Current Time
+
 
         var mHour = cal.get(Calendar.HOUR_OF_DAY);
         var mMinute = cal.get(Calendar.MINUTE);
@@ -58,14 +70,6 @@ class edit_task : Fragment() {
                 //lastSelectedMinute = minute
             }
 
-        // Launch Time Picker Dialog
-        /*
-         btn_date.setOnClickListener(object : View.OnClickListener {
-             override fun onClick(view: View) {
-
-             }
-         })
-        */
 
         btn_date.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
@@ -84,9 +88,18 @@ class edit_task : Fragment() {
 
         })
 
+        val rv = root?.findViewById<RecyclerView>(R.id.rv_reminders)
+        val lista = listOf<String>("Recordatorio1","Recordatorio2","Recordatorio3","Recordatorio4")
+        rv?.adapter = reminder_adapter(lista)
+        rv?.layoutManager = LinearLayoutManager(this@edit_task.requireContext())
+
+
+
 
         return root.rootView
     }
+
+
     private fun updateDateInView() {
         val myFormat = "MM/dd/yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
@@ -17,6 +18,8 @@ import com.example.proyecto_notas.databinding.FragmentAddNoteBinding
 
 class Add_note : Fragment() {
 
+    var txt_title : EditText? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,12 +28,15 @@ class Add_note : Fragment() {
         val binding = DataBindingUtil.inflate<FragmentAddNoteBinding>(inflater,
             R.layout.fragment_add_note,container,false)
 
-        var txt_title = binding.edtxtTitle;
+        txt_title = binding.edtxtTitle;
         var sp_note_type = binding.spNoteType;
         binding.btnNext.setOnClickListener{view : View ->
-            if(txt_title.length()>0){
+            if(txt_title!!.length()>0){
 
-                if(!sp_note_type.selectedItemId.toString().equals("0")){
+                if(sp_note_type.selectedItemId.toString().equals("1")){
+                    var bundle = Bundle()
+                    bundle.putString("title", txt_title!!.text.toString())
+                    parentFragmentManager.setFragmentResult("key",bundle)
                     view.findNavController().navigate(R.id.action_add_note_to_edit_task)
                 }else{
                     Toast.makeText(activity, "Debes indicar el tipo de nota", Toast.LENGTH_SHORT).show()

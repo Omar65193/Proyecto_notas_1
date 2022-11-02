@@ -13,7 +13,7 @@
             android:id="@+id/btn_cancel_edit_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="36dp"
             android:layout_marginTop="100dp"
             android:text="@string/Cancel"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,20 +24,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:layout_marginEnd="48dp"
+            android:layout_marginEnd="36dp"
             android:text="@string/done"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btn_cancel_edit_task"
             app:layout_constraintTop_toBottomOf="@+id/button" />
 
         <Button
             android:id="@+id/btn_date"
-            android:layout_width="329dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="36dp"
+            android:layout_width="336dp"
+            android:layout_height="41dp"
             android:layout_marginTop="12dp"
             android:text="@string/btn_date"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textview_date" />
 
@@ -50,7 +48,7 @@
             android:text="00/00/0000"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_title_edit_task" />
 
         <TextView
             android:id="@+id/txt_hour"
@@ -61,10 +59,10 @@
             android:text="00 : 00"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/textview_date"
-            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_title_edit_task" />
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/txt_title_edit_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -87,28 +85,23 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_width="59dp"
-            android:layout_height="51dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:text="+"
-            android:textSize="20sp"
+            android:layout_width="336dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="16dp"
+            android:text="Agregar recordatorio"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView3" />
+            app:layout_constraintTop_toBottomOf="@+id/rv_reminders" />
 
-        <ScrollView
-            android:id="@+id/scrollView3"
-            android:layout_width="334dp"
-            android:layout_height="139dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="12dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_reminders"
+            android:layout_width="325dp"
+            android:layout_height="153dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
