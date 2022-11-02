@@ -1,16 +1,16 @@
 package com.example.proyecto_notas
 
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.app.TimePickerDialog.OnTimeSetListener
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.app.DatePickerDialog
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +29,12 @@ class edit_task : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_edit_task, container, false)
         val btn_date = root.findViewById<Button>(R.id.btn_date)
+        textview_date = root.findViewById(R.id.textview_date)
+        var txt_hour = root.findViewById<TextView>(R.id.txt_hour)
+
+        root.findViewById<Button>(R.id.btn_cancel_edit_task).setOnClickListener{ view : View ->
+            view.findNavController().navigate(R.id.action_edit_task_to_add_note)
+        }
 
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
             override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int,
@@ -40,8 +46,27 @@ class edit_task : Fragment() {
             }
         }
 
+        // Get Current Time
 
-        // when you click on the button, show DatePickerDialog that is set with OnDateSetListener
+        var mHour = cal.get(Calendar.HOUR_OF_DAY);
+        var mMinute = cal.get(Calendar.MINUTE);
+
+        val timeSetListener =
+            OnTimeSetListener { view, hourOfDay, minute ->
+                txt_hour.setText("$hourOfDay:$minute")
+                //lastSelectedHour = hourOfDay
+                //lastSelectedMinute = minute
+            }
+
+        // Launch Time Picker Dialog
+        /*
+         btn_date.setOnClickListener(object : View.OnClickListener {
+             override fun onClick(view: View) {
+
+             }
+         })
+        */
+
         btn_date.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
 
@@ -53,9 +78,12 @@ class edit_task : Fragment() {
                         cal.get(Calendar.MONTH),
                         cal.get(Calendar.DAY_OF_MONTH)).show()
                 }
+                TimePickerDialog(this@edit_task.requireContext(),timeSetListener
+                    ,mHour,mMinute,true).show()
             }
 
         })
+
 
         return root.rootView
     }

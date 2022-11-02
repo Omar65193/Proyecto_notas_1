@@ -21,10 +21,17 @@
         <action
             android:id="@+id/action_add_note_to_edit_task"
             app:destination="@id/edit_task" />
+        <action
+            android:id="@+id/action_add_note_to_mainMenu"
+            app:destination="@id/mainMenu" />
     </fragment>
     <fragment
         android:id="@+id/edit_task"
         android:name="com.example.proyecto_notas.edit_task"
         android:label="fragment_edit_task"
-        tools:layout="@layout/fragment_edit_task" />
+        tools:layout="@layout/fragment_edit_task" >
+        <action
+            android:id="@+id/action_edit_task_to_add_note"
+            app:destination="@id/add_note" />
+    </fragment>
 </navigation>
