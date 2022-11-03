@@ -19,7 +19,7 @@ import com.example.proyecto_notas.databinding.FragmentAddNoteBinding
 class Add_note : Fragment() {
 
     var txt_title : EditText? = null
-
+    var txt_description : EditText? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,18 +28,27 @@ class Add_note : Fragment() {
         val binding = DataBindingUtil.inflate<FragmentAddNoteBinding>(inflater,
             R.layout.fragment_add_note,container,false)
 
-        txt_title = binding.edtxtTitle;
+        txt_title = binding.edtxtTitle
+        txt_description = binding.edtxtDescription
+
         var sp_note_type = binding.spNoteType;
         binding.btnNext.setOnClickListener{view : View ->
             if(txt_title!!.length()>0){
 
                 if(sp_note_type.selectedItemId.toString().equals("1")){
-                    var bundle = Bundle()
-                    bundle.putString("title", txt_title!!.text.toString())
-                    parentFragmentManager.setFragmentResult("key",bundle)
-                    view.findNavController().navigate(R.id.action_add_note_to_edit_task)
+                    if(txt_description!!.length()>0){
+                        var bundle = Bundle()
+                        bundle.putString("title", txt_title!!.text.toString())
+                        bundle.putString("description", txt_description!!.text.toString())
+
+                        parentFragmentManager.setFragmentResult("key",bundle)
+                        view.findNavController().navigate(R.id.action_add_note_to_edit_task)
+                    }else{
+                        Toast.makeText(activity, "Debes agregar una descripción", Toast.LENGTH_SHORT).show()
+                    }
+
                 }else{
-                    Toast.makeText(activity, "Debes indicar el tipo de nota", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "El tipo de nota debe ser Tarea", Toast.LENGTH_SHORT).show()
                 }
 
             }else{
