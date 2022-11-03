@@ -25,6 +25,11 @@ class MainMenu : Fragment() {
 
         }
 
+        binding.btnTaskList.setOnClickListener{ view : View ->
+            view.findNavController().navigate(R.id.action_mainMenu_to_task_list)
+
+        }
+
         // Inflate the layout for this fragment
         return binding.root
     }

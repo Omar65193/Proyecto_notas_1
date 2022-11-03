@@ -60,7 +60,7 @@ class edit_task : Fragment() {
         }
 
 
-        root.findViewById<Button>(R.id.btn_end).setOnClickListener{
+        root.findViewById<Button>(R.id.btn_end).setOnClickListener{view : View ->
             lifecycleScope.launch{
                 val newNote = com.example.proyecto_notas.model.Note(title,description)
                 noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().insert(newNote)
@@ -69,6 +69,8 @@ class edit_task : Fragment() {
                 Toast.makeText(this@edit_task.requireContext(),notes.size.toString(), Toast.LENGTH_SHORT).show()
 
             }
+            view.findNavController().navigate(R.id.action_edit_task_to_task_list)
+
         }
 
 
