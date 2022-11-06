@@ -30,6 +30,10 @@ class MainMenu : Fragment() {
 
         }
 
+        binding.btnNoteList.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_mainMenu_to_note_list)
+        }
+
         // Inflate the layout for this fragment
         return binding.root
     }

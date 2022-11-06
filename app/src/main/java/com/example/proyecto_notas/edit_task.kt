@@ -45,8 +45,8 @@ class edit_task : Fragment() {
 
 
 
-
-
+        var id = -1
+        var completed = false
 
 
 
@@ -54,6 +54,15 @@ class edit_task : Fragment() {
             title = bundle.getString("title").toString()
 
             description = bundle.getString("description").toString()
+
+            if(bundle.getString("date")!=null){
+                textview_date!!.text = bundle.getString("date")
+                txt_hour.text = bundle.getString("hour")
+                id = bundle.getString("id")!!.toInt()
+                completed = bundle.getString("completed").toBoolean()
+            }
+
+
             root.findViewById<TextView>(R.id.txt_title_edit_task).text = title
 
 
@@ -62,14 +71,20 @@ class edit_task : Fragment() {
 
         root.findViewById<Button>(R.id.btn_end).setOnClickListener{view : View ->
             lifecycleScope.launch{
-                val newNote = com.example.proyecto_notas.model.Note(title,description)
-                noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().insert(newNote)
-                var notes : List<Note> = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getAllNotes()
+                var note = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getById(id)
+                if(!note.toString().equals("[]")){
+                    noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().updateTask(title.toUpperCase(),description.toUpperCase(),textview_date!!.text.toString(),txt_hour.text.toString(),completed,id)
+                }else{
+                    val newNote = com.example.proyecto_notas.model.Note(title.toUpperCase(),description.toUpperCase(),1,textview_date!!.text.toString(),txt_hour.text.toString(),false)
+                    noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().insert(newNote)
+                }
+                var notes : List<Note> = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getAllTasks()
 
                 Toast.makeText(this@edit_task.requireContext(),notes.size.toString(), Toast.LENGTH_SHORT).show()
 
             }
             view.findNavController().navigate(R.id.action_edit_task_to_task_list)
+
 
         }
 

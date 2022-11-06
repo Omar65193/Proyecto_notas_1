@@ -9,6 +9,7 @@ import com.example.proyecto_notas.model.Note
 @Database(entities = [Note::class], version = 1, exportSchema = false)
 abstract class noteDatabase : RoomDatabase(){
     abstract fun noteDao(): noteDao
+
     companion object {
         private var INSTANCE: noteDatabase? = null
         fun getDatabase(context: Context): noteDatabase {
@@ -23,4 +24,5 @@ abstract class noteDatabase : RoomDatabase(){
             return INSTANCE!!
         }
     }
+
 }

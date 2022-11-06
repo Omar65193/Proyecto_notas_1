@@ -88,7 +88,7 @@
             android:layout_width="336dp"
             android:layout_height="41dp"
             android:layout_marginTop="16dp"
-            android:text="Agregar recordatorio"
+            android:text="@string/add_reminder"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.493"

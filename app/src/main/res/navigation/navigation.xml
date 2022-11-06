@@ -13,6 +13,9 @@
             android:id="@+id/action_mainMenu_to_add_note"
             app:destination="@id/add_note" />
         <action
+            android:id="@+id/action_mainMenu_to_note_list"
+            app:destination="@id/note_list" />
+        <action
             android:id="@+id/action_mainMenu_to_task_list"
             app:destination="@id/task_list" />
     </fragment>
@@ -27,6 +30,9 @@
         <action
             android:id="@+id/action_add_note_to_mainMenu"
             app:destination="@id/mainMenu" />
+        <action
+            android:id="@+id/action_add_note_to_note_list"
+            app:destination="@id/note_list" />
     </fragment>
     <fragment
         android:id="@+id/edit_task"
@@ -44,5 +50,23 @@
         android:id="@+id/task_list"
         android:name="com.example.proyecto_notas.task_list"
         android:label="fragment_task_list"
-        tools:layout="@layout/fragment_task_list" />
+        tools:layout="@layout/fragment_task_list" >
+        <action
+            android:id="@+id/action_task_list_to_mainMenu"
+            app:destination="@id/mainMenu" />
+        <action
+            android:id="@+id/action_task_list_to_add_note"
+            app:destination="@id/add_note" />
+    </fragment>
+    <fragment
+        android:id="@+id/note_list"
+        android:name="note_list"
+        android:label="note_list" >
+        <action
+            android:id="@+id/action_note_list_to_mainMenu"
+            app:destination="@id/mainMenu" />
+        <action
+            android:id="@+id/action_note_list_to_add_note"
+            app:destination="@id/add_note" />
+    </fragment>
 </navigation>
