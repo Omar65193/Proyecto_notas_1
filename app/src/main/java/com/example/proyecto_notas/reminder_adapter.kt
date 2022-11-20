@@ -5,13 +5,16 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.proyecto_notas.model.Reminder
 
-class reminder_adapter(val reminders: List<String>): RecyclerView.Adapter<reminder_adapter.ViewHolder>(){
+class reminder_adapter(val reminders: List<Reminder>): RecyclerView.Adapter<reminder_adapter.ViewHolder>(){
 
     class ViewHolder(v : View) : RecyclerView.ViewHolder(v){
-        var name : TextView
+        var time : TextView
+        var date : TextView
         init{
-            name = v.findViewById(R.id.row_name)
+            time = v.findViewById(R.id.reminder_time)
+            date = v.findViewById(R.id.reminder_date)
         }
     }
 
@@ -22,7 +25,9 @@ class reminder_adapter(val reminders: List<String>): RecyclerView.Adapter<remind
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val p = reminders[position]
-        holder.name.text = p.toString()
+        holder.time.text = p.time
+        holder.date.text = p.date
+
     }
 
     override fun getItemCount(): Int {

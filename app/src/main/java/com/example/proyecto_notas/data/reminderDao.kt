@@ -3,27 +3,27 @@ package com.example.proyecto_notas.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.proyecto_notas.model.Note
+import com.example.proyecto_notas.model.Reminder
 import java.util.Date
 
-//import com.example.proyecto_notas.model.Note_reminders
 
 @Dao
-interface noteDao {
+interface reminderDao {
 
     @Insert
-     fun insert(note:Note)
+    fun insert(reminder: Reminder)
+    @Query("SELECT * FROM Reminder WHERE noteID=:id")
+    fun getAllReminders(id: Int): MutableList<Reminder>
 
-     @Query("SELECT MAX(id) FROM Note WHERE type=1")
-     fun getMaxID(): Int
-
+    /*
     @Query("SELECT * FROM Note WHERE type=1 ORDER BY date DESC")
-     fun getAllTasks(): List<Note>
+    fun getAllTasks(): List<Note>
 
     @Query("SELECT * FROM Note WHERE type=2 ORDER BY id DESC")
     fun getAllNotes(): List<Note>
 
     @Query("SELECT * FROM Note WHERE id= :id")
-     fun getById(id: Int) : List<Note>
+    fun getById(id: Int) : List<Note>
 
     @Query("SELECT * FROM Note WHERE title LIKE :title AND type=:type OR description LIKE :description AND type=:type")
     fun getByTitleDescription(title: String, description: String, type:Int) : List<Note>
@@ -36,8 +36,10 @@ interface noteDao {
     fun updateNote(title: String,description:String, id: Int)
 
 
-     @Delete
-     fun deleteNote(note: Note)
+    @Delete
+    fun deleteNote(note: Note)
+    */
+
     /*
     @Transaction
     @Query("SELECT * FROM Note")

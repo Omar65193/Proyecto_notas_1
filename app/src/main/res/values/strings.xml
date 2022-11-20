@@ -16,6 +16,9 @@
     <string name="btn_date">Elegir fecha y hora</string>
     <string name="add_reminder">Agregar recordatorio</string>
     <string name="done">Finalizar</string>
+    <string name="note_list_title">Lista de notas</string>
+    <string name="completed">Completada</string>
+    <string name="home">Inicio</string>
     <string-array name="type">
         <item>Seleccione</item>
         <item>Tarea</item>
