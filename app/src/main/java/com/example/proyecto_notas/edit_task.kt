@@ -110,6 +110,9 @@ class edit_task : Fragment() {
 
 
         root.findViewById<Button>(R.id.btn_cancel_edit_task).setOnClickListener{ view : View ->
+            if(id==-1){
+                noteDatabase.getDatabase(requireActivity().applicationContext).reminderDAO().deleteAllReminders(id)
+            }
             view.findNavController().navigate(R.id.action_edit_task_to_add_note)
         }
         var id_maximo = 0

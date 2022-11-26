@@ -15,6 +15,12 @@ interface reminderDao {
     @Query("SELECT * FROM Reminder WHERE noteID=:id")
     fun getAllReminders(id: Int): MutableList<Reminder>
 
+    @Query("DELETE FROM Reminder WHERE  noteID = :id")
+    fun deleteAllReminders(id: Int)
+
+    @Delete
+    fun deleteReminder(reminder:Reminder)
+
     /*
     @Query("SELECT * FROM Note WHERE type=1 ORDER BY date DESC")
     fun getAllTasks(): List<Note>

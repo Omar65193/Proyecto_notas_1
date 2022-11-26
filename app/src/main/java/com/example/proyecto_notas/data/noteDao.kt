@@ -13,7 +13,7 @@ interface noteDao {
     @Insert
      fun insert(note:Note)
 
-     @Query("SELECT MAX(id) FROM Note WHERE type=1")
+     @Query("SELECT MAX(id) FROM Note")
      fun getMaxID(): Int
 
     @Query("SELECT * FROM Note WHERE type=1 ORDER BY date DESC")
