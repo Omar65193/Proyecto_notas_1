@@ -2,21 +2,13 @@ package com.example.proyecto_notas
 
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TimePickerDialog
+import android.app.*
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
-import android.text.format.DateFormat.getLongDateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,13 +20,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.example.proyecto_notas.data.noteDatabase
 import com.example.proyecto_notas.model.Note
 import com.example.proyecto_notas.model.Reminder
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import android.text.format.DateFormat.getLongDateFormat
 import java.util.*
 
 
@@ -112,6 +103,7 @@ class edit_task : Fragment() {
                 }else{
                     val newNote = com.example.proyecto_notas.model.Note(title.toUpperCase(),description.toUpperCase(),1,textview_date!!.text.toString(),txt_hour.text.toString(),false)
                     noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().insert(newNote)
+                    noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().insertLastID(noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getMaxID())
 
                 }
                 var notes : List<Note> = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getAllTasks()
@@ -119,9 +111,8 @@ class edit_task : Fragment() {
                 Toast.makeText(this@edit_task.requireContext(),notes.size.toString(), Toast.LENGTH_SHORT).show()
 
             }
+
             view.findNavController().navigate(R.id.action_edit_task_to_task_list)
-
-
         }
 
         var selected_hour = cal.get(Calendar.HOUR_OF_DAY);
@@ -130,11 +121,27 @@ class edit_task : Fragment() {
 
 
         root.findViewById<Button>(R.id.btn_cancel_edit_task).setOnClickListener{ view : View ->
-            if(id==-1){
-                noteDatabase.getDatabase(requireActivity().applicationContext).reminderDAO().deleteAllReminders(id)
-            }
+            var alarmManager =  requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                var id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getLastID()
+
+                var lista = noteDatabase.getDatabase(requireActivity().applicationContext).reminderDAO().getAllReminders(id_maximo+1)
+                for(it in lista){
+                    val intent  = Intent(requireActivity().applicationContext, Notification::class.java)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        requireActivity().applicationContext,
+                        it.id,
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    alarmManager.cancel(pendingIntent)
+                }
+                noteDatabase.getDatabase(requireActivity().applicationContext).reminderDAO().deleteAllReminders(id_maximo+1)
+
+
             view.findNavController().navigate(R.id.action_edit_task_to_add_note)
         }
+
         var id_maximo = 0
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
             @RequiresApi(Build.VERSION_CODES.M)
@@ -158,6 +165,9 @@ class edit_task : Fragment() {
                         }else{
 
                                 id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getMaxID()
+                            if(id_maximo==0){
+                                id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getLastID()
+                            }
                             newReminder = Reminder(id_maximo+1,updateDateInView(),"$selected_hour:$selected_minute")
 
                         }

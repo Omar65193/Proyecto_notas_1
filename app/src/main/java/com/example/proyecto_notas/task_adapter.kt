@@ -1,5 +1,9 @@
 package com.example.proyecto_notas
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +12,12 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.example.proyecto_notas.data.noteDatabase
 import com.example.proyecto_notas.model.Note
+import kotlinx.coroutines.launch
 
 class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.ViewHolder>(){
 
@@ -47,7 +54,21 @@ class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.Vie
         holder.description.text =p.description.toString()
         holder.date_hour.text = p.date+" "+p.hour
         holder.cb_completed.isChecked = p.completed
+
         holder.btn_delete.setOnClickListener{view : View ->
+            var alarmManager =  holder.name.context.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            var lista = noteDatabase.getDatabase(holder.name.context.applicationContext).reminderDAO().getAllReminders(p.id)
+            for(it in lista){
+                val intent  = Intent(holder.name.context.applicationContext, Notification::class.java)
+                val pendingIntent = PendingIntent.getBroadcast(
+                    holder.name.context.applicationContext,
+                    it.id,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+                alarmManager.cancel(pendingIntent)
+            }
+            noteDatabase.getDatabase(holder.name.context).reminderDAO().deleteAllReminders(p.id)
             noteDatabase.getDatabase(holder.name.context).noteDao().deleteNote(p)
             var notes  = noteDatabase.getDatabase(holder.name.context).noteDao().getAllTasks()
             this.tasks = notes

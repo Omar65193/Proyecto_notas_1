@@ -15,7 +15,7 @@ interface reminderDao {
     @Query("SELECT * FROM Reminder WHERE noteID=:id")
     fun getAllReminders(id: Int): MutableList<Reminder>
 
-    @Query("DELETE FROM Reminder WHERE  noteID = :id")
+    @Query("DELETE FROM Reminder WHERE noteID = :id")
     fun deleteAllReminders(id: Int)
 
     @Delete
@@ -23,6 +23,8 @@ interface reminderDao {
 
     @Query("SELECT MAX(ID) FROM reminder")
     fun getMaxId():Int
+
+
     /*
     @Query("SELECT * FROM Note WHERE type=1 ORDER BY date DESC")
     fun getAllTasks(): List<Note>

@@ -1,9 +1,7 @@
 package com.example.proyecto_notas.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.proyecto_notas.model.Note
-import java.util.Date
 
 //import com.example.proyecto_notas.model.Note_reminders
 
@@ -38,6 +36,13 @@ interface noteDao {
 
      @Delete
      fun deleteNote(note: Note)
+
+    @Query("INSERT INTO lastID (last) VALUES(:id)")
+    fun insertLastID(id:Int)
+
+    @Query("SELECT * FROM lastID ORDER BY ID DESC LIMIT 1")
+    fun getLastID() : Int
+
     /*
     @Transaction
     @Query("SELECT * FROM Note")
