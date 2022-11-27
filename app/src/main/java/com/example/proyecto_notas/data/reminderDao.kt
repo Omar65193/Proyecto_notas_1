@@ -21,6 +21,8 @@ interface reminderDao {
     @Delete
     fun deleteReminder(reminder:Reminder)
 
+    @Query("SELECT MAX(ID) FROM reminder")
+    fun getMaxId():Int
     /*
     @Query("SELECT * FROM Note WHERE type=1 ORDER BY date DESC")
     fun getAllTasks(): List<Note>

@@ -2,14 +2,26 @@ package com.example.proyecto_notas
 
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
+import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
+import android.text.format.DateFormat.getLongDateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +32,9 @@ import com.example.proyecto_notas.data.noteDatabase
 import com.example.proyecto_notas.model.Note
 import com.example.proyecto_notas.model.Reminder
 import kotlinx.coroutines.launch
+import java.text.DateFormat
 import java.text.SimpleDateFormat
+import android.text.format.DateFormat.getLongDateFormat
 import java.util.*
 
 
@@ -32,9 +46,15 @@ class edit_task : Fragment() {
     lateinit var title :String
     lateinit var description :String
     lateinit var newReminder: Reminder
+    var mHour: Int = 0
+    var mMinute : Int = 0
+    var yearReminder: Int = 0
+    var monthReminder: Int = 0
+    var dayReminder: Int = 0
     val root : View? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,7 +67,7 @@ class edit_task : Fragment() {
         textview_date = root.findViewById(R.id.textview_date)
         var txt_hour = root.findViewById<TextView>(R.id.txt_hour)
 
-
+        createNotificationChannel()
 
         var id = -1
         var completed = false
@@ -117,6 +137,7 @@ class edit_task : Fragment() {
         }
         var id_maximo = 0
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
+            @RequiresApi(Build.VERSION_CODES.M)
             @SuppressLint("NotifyDataSetChanged")
             override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int,
                                    dayOfMonth: Int) {
@@ -127,10 +148,11 @@ class edit_task : Fragment() {
                 if(seleccionado==0){
                     updateDateInView(textview_date!!)
                 }else{
-
+                    monthReminder = monthOfYear
+                    yearReminder = year
+                    dayReminder = dayOfMonth
                     lifecycleScope.launch{
                         var note = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getById(id)
-
                         if(!note.toString().equals("[]")) {
                             newReminder = Reminder(id,updateDateInView(),"$selected_hour:$selected_minute")
                         }else{
@@ -150,6 +172,8 @@ class edit_task : Fragment() {
                         reminder_adapter(reminders)
                         rv?.adapter!!.notifyDataSetChanged()
                         rv?.adapter = reminder_adapter(reminders)
+                        //AQUI FUNCIONABA
+                        scheduleNotification(noteDatabase.getDatabase(requireActivity().applicationContext).reminderDAO().getMaxId())
                     }
 
                 }
@@ -158,8 +182,8 @@ class edit_task : Fragment() {
 
 
 
-        var mHour = cal.get(Calendar.HOUR_OF_DAY);
-        var mMinute = cal.get(Calendar.MINUTE);
+         mHour = cal.get(Calendar.HOUR_OF_DAY);
+         mMinute = cal.get(Calendar.MINUTE);
 
 
 
@@ -167,6 +191,8 @@ class edit_task : Fragment() {
             OnTimeSetListener { view, hourOfDay, minute ->
                 selected_hour = hourOfDay
                 selected_minute = minute
+                mHour = hourOfDay
+                mMinute = minute
                 if(seleccionado == 0){
                     txt_hour.setText("$hourOfDay:$minute")
                 }
@@ -190,7 +216,7 @@ class edit_task : Fragment() {
             override fun onClick(view: View) {
                 seleccionado = 0
                 TimePickerDialog(this@edit_task.requireContext(),timeSetListener
-                    ,mHour,mMinute,true).show()
+                    , mHour as Int, mMinute as Int,true).show()
             }
         })
 
@@ -198,7 +224,7 @@ class edit_task : Fragment() {
             override fun onClick(view: View) {
                 seleccionado = 1
                 TimePickerDialog(this@edit_task.requireContext(),timeSetListener
-                    ,mHour,mMinute,true).show()
+                    , mHour as Int, mMinute as Int,true).show()
             }
 
         })
@@ -217,15 +243,71 @@ class edit_task : Fragment() {
 
 
     private fun updateDateInView(txt_date: TextView) {
-        val myFormat = "dd/MM/yyyy" // mention the format you need
+        val myFormat = "dd/MM/yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.US)
         txt_date!!.text = sdf.format(cal.getTime())
     }
 
     private fun updateDateInView(): String{
-        val myFormat = "dd/MM/yyyy" // mention the format you need
+        val myFormat = "dd/MM/yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.US)
         return sdf.format(cal.getTime()).toString()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun scheduleNotification(id:Int){
+        val intent  = Intent(requireActivity().applicationContext, Notification::class.java)
+        val title =   this.title
+        val message = "¡Recuerda hacer tu tarea!"
+        intent.putExtra(titleExtra,title)
+        intent.putExtra(messageExtra,message)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity().applicationContext,
+            id,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        var alarmManager =  requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = getTime()
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            time,
+            pendingIntent
+        )
+        showAlert(time,title,message)
+    }
+
+    private fun showAlert(time: Long, title: String, message: String) {
+        val date = Date(time)
+        val dateFormat = android.text.format.DateFormat.getLongDateFormat(requireActivity().applicationContext)
+        val timeFormat = android.text.format.DateFormat.getTimeFormat(requireContext().applicationContext)
+
+        AlertDialog.Builder(this@edit_task.requireContext()).setTitle("nose").setMessage("Title: "+ title +"\nMessage"+ message + "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date)).setPositiveButton("Okay"){_,_->}.show()
+    }
+
+    private fun getTime(): Long{
+        val minute = this.mMinute
+        val hour = this.mHour
+        val day = this.dayReminder
+        val month = this.monthReminder
+        val year = this.yearReminder
+
+        val calendar = Calendar.getInstance()
+        calendar.set(year,month,day,hour,minute)
+        return calendar.timeInMillis
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(){
+        val name = "Notif Channel"
+        val desc = "descripcion "
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(channelID,name,importance)
+        channel.description = desc
+
+        val notificationManager = requireActivity().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
 
