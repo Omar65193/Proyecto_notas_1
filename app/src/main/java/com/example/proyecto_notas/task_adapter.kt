@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
@@ -28,6 +29,7 @@ class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.Vie
         var btn_delete: ImageView
         var btn_edit: ImageView
         var cb_completed : CheckBox
+        var btn_media : Button
         init{
             name = v.findViewById(R.id.txt_title_note)
             description = v.findViewById(R.id.txt_description_note)
@@ -35,6 +37,7 @@ class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.Vie
             btn_delete = v.findViewById(R.id.btn_delete)
             btn_edit = v.findViewById(R.id.btn_edit)
             cb_completed = v.findViewById(R.id.cb_completed)
+            btn_media = v.findViewById(R.id.btn_media)
 
         }
 
@@ -55,6 +58,13 @@ class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.Vie
         holder.date_hour.text = p.date+" "+p.hour
         holder.cb_completed.isChecked = p.completed
 
+        holder.btn_media.setOnClickListener{view : View ->
+            var bundle = Bundle()
+            bundle.putString("id",p.id.toString())
+            bundle.putString("title",p.title)
+            view.findNavController().navigate(R.id.action_task_list_to_note_media,bundle)
+        }
+
         holder.btn_delete.setOnClickListener{view : View ->
             var alarmManager =  holder.name.context.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             var lista = noteDatabase.getDatabase(holder.name.context.applicationContext).reminderDAO().getAllReminders(p.id)
@@ -69,6 +79,7 @@ class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.Vie
                 alarmManager.cancel(pendingIntent)
             }
             noteDatabase.getDatabase(holder.name.context).reminderDAO().deleteAllReminders(p.id)
+            noteDatabase.getDatabase(holder.name.context).mediaDao().deleteAllMedia(p.id)
             noteDatabase.getDatabase(holder.name.context).noteDao().deleteNote(p)
             var notes  = noteDatabase.getDatabase(holder.name.context).noteDao().getAllTasks()
             this.tasks = notes

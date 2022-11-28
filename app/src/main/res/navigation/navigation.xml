@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_task_list_to_add_note"
             app:destination="@id/add_note" />
+        <action
+            android:id="@+id/action_task_list_to_note_media"
+            app:destination="@id/note_media" />
     </fragment>
     <fragment
         android:id="@+id/note_list"
@@ -68,5 +71,14 @@
         <action
             android:id="@+id/action_note_list_to_add_note"
             app:destination="@id/add_note" />
+    </fragment>
+    <fragment
+        android:id="@+id/note_media"
+        android:name="com.example.proyecto_notas.note_media"
+        android:label="fragment_note_media"
+        tools:layout="@layout/fragment_note_media" >
+        <action
+            android:id="@+id/action_note_media_to_task_list"
+            app:destination="@id/task_list" />
     </fragment>
 </navigation>

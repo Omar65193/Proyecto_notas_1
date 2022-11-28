@@ -19,6 +19,12 @@
     <string name="note_list_title">Lista de notas</string>
     <string name="completed">Completada</string>
     <string name="home">Inicio</string>
+    <string name="watch__media">Ver multimedia</string>
+    <string name="title_note_media">Esta es la multimedia que agregaste para :</string>
+    <string name="back">Volver</string>
+    <string name="add_video">Agregar video</string>
+    <string name="add_image">Agregar imagen</string>
+    <string name="add_audio">agregar audio</string>
     <string-array name="type">
         <item>Seleccione</item>
         <item>Tarea</item>

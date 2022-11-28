@@ -41,6 +41,7 @@ class note_adapter(var notes: List<Note>): RecyclerView.Adapter<note_adapter.Vie
         holder.name.text = p.title.toString()
         holder.description.text =p.description.toString()
         holder.btn_delete.setOnClickListener{view : View ->
+            noteDatabase.getDatabase(holder.name.context).mediaDao().deleteAllMedia(p.id)
             noteDatabase.getDatabase(holder.name.context).noteDao().deleteNote(p)
             var notes  = noteDatabase.getDatabase(holder.name.context).noteDao().getAllNotes()
             this.notes = notes
