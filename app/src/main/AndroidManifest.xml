@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto_notas"
         tools:targetApi="31">
+
         <provider
             android:authorities="com.example.proyecto_notas.fileprovider"
             android:name="androidx.core.content.FileProvider"
@@ -34,7 +35,8 @@
             />
         <activity
             android:name="com.example.proyecto_notas.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

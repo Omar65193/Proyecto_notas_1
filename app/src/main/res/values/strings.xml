@@ -17,9 +17,9 @@
     <string name="done">End</string>
     <string name="note_list_title">Note list</string>
     <string name="completed">Done</string>
-    <string name="home">Start</string>
+    <string name="home">Home</string>
     <string name="watch__media">Show media</string>
-    <string name="title_note_media">This is the associated media</string>
+    <string name="title_note_media">This is the associated media for the following task</string>
     <string name="back">Back</string>
     <string name="add_video">Add video</string>
     <string name="add_image">Add image</string>
