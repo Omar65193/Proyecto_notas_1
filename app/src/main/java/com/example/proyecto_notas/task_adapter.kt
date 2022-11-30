@@ -62,6 +62,7 @@ class task_adapter(var tasks: List<Note>): RecyclerView.Adapter<task_adapter.Vie
             var bundle = Bundle()
             bundle.putString("id",p.id.toString())
             bundle.putString("title",p.title)
+            bundle.putString("window","task_list")
             view.findNavController().navigate(R.id.action_task_list_to_note_media,bundle)
         }
 

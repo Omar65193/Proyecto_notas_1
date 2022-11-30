@@ -14,8 +14,8 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginStart="96dp"
+            android:layout_marginTop="36dp"
             android:text="@string/note_title"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,51 +36,51 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="16dp"
             android:text="@string/note_type"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_add_image" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_file" />
 
         <EditText
             android:id="@+id/edtxt_description"
-            android:layout_width="317dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="210dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="20dp"
             android:ems="10"
             android:inputType="textPersonName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            app:layout_constraintStart_toEndOf="@+id/textView4"
+            app:layout_constraintTop_toTopOf="@+id/textView4" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="24dp"
             android:text="@string/note_description"
             android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edtxt_title" />
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <EditText
             android:id="@+id/edtxt_title"
-            android:layout_width="321dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="210dp"
+            android:layout_height="43dp"
             android:ems="10"
             android:inputType="textPersonName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintStart_toStartOf="@+id/edtxt_description"
+            app:layout_constraintTop_toTopOf="@+id/textView" />
 
         <Button
             android:id="@+id/btn_add_image"
             android:layout_width="80dp"
             android:layout_height="47dp"
-            android:layout_marginStart="52dp"
+            android:layout_marginStart="44dp"
             android:layout_marginTop="16dp"
             android:text="@string/add_image"
             android:textSize="8dp"
@@ -91,18 +91,18 @@
             android:id="@+id/sp_note_type"
             android:layout_width="186dp"
             android:layout_height="19dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
-            app:layout_constraintStart_toEndOf="@+id/textView6"
+            android:layout_marginStart="28dp"
             android:entries="@array/type"
-            app:layout_constraintTop_toBottomOf="@+id/btn_add_image" />
+            app:layout_constraintBottom_toBottomOf="@+id/textView6"
+            app:layout_constraintStart_toEndOf="@+id/textView6"
+            app:layout_constraintTop_toTopOf="@+id/textView6" />
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="88dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="24dp"
             android:text="@string/Cancel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -111,13 +111,10 @@
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="88dp"
-            android:layout_marginTop="88dp"
+            android:layout_marginEnd="36dp"
             android:text="@string/Next"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.115"
-            app:layout_constraintStart_toEndOf="@+id/btn_cancel"
-            app:layout_constraintTop_toBottomOf="@+id/sp_note_type" />
+            app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
 
         <Button
             android:id="@+id/btn_add_video"
@@ -128,6 +125,18 @@
             app:layout_constraintEnd_toStartOf="@+id/btn_add_audio"
             app:layout_constraintStart_toEndOf="@+id/btn_add_image"
             app:layout_constraintTop_toTopOf="@+id/btn_add_image" />
+
+        <Button
+            android:id="@+id/btn_add_file"
+            android:layout_width="313dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_file"
+            android:textSize="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.506"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_video" />
 
         <Button
             android:id="@+id/btn_add_audio"
@@ -141,10 +150,23 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_media"
-            android:layout_width="310dp"
-            android:layout_height="107dp"
+            android:layout_width="329dp"
+            android:layout_height="222dp"
             android:layout_marginStart="44dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/file_description" />
+
+        <EditText
+            android:id="@+id/file_description"
+            android:layout_width="332dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="4dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Descripcion de archivo"
+            android:textColor="@android:color/darker_gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
 

@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_note_list_to_add_note"
             app:destination="@id/add_note" />
+        <action
+            android:id="@+id/action_note_list_to_note_media"
+            app:destination="@id/note_media" />
     </fragment>
     <fragment
         android:id="@+id/note_media"
@@ -80,5 +83,8 @@
         <action
             android:id="@+id/action_note_media_to_task_list"
             app:destination="@id/task_list" />
+        <action
+            android:id="@+id/action_note_media_to_note_list"
+            app:destination="@id/note_list" />
     </fragment>
 </navigation>

@@ -23,11 +23,17 @@ class note_media : Fragment() {
         val root = inflater.inflate(R.layout.fragment_note_media, container, false)
         var id = arguments?.getString("id")!!.toInt()
         var title = arguments?.getString("title")!!.toString()
+        var window = arguments?.getString("window")!!.toString()
         var titulo = root.findViewById<TextView>(R.id.txt_task_title)
         titulo.text = title
         var btn_back = root.findViewById<Button>(R.id.btn_back)
         btn_back.setOnClickListener{ view : View ->
-            view.findNavController().navigate(R.id.action_note_media_to_task_list)
+            if(window.equals("task_list")){
+                view.findNavController().navigate(R.id.action_note_media_to_task_list)
+            }else{
+                view.findNavController().navigate(R.id.action_note_media_to_note_list)
+            }
+
         }
         var media  = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id)
         val rv = root.findViewById<RecyclerView>(R.id.rv_all_media)

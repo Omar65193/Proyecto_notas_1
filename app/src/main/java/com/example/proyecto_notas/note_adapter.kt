@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
@@ -18,11 +19,13 @@ class note_adapter(var notes: List<Note>): RecyclerView.Adapter<note_adapter.Vie
         var description : TextView
         var btn_delete: ImageView
         var btn_edit : ImageView
+        var btn_media : Button
         init{
             name = v.findViewById(R.id.txt_title_note)
             description = v.findViewById(R.id.txt_description_note)
             btn_delete = v.findViewById(R.id.btn_delete)
             btn_edit = v.findViewById(R.id.btn_edit)
+            btn_media = v.findViewById(R.id.btn_media2)
 
         }
 
@@ -56,6 +59,14 @@ class note_adapter(var notes: List<Note>): RecyclerView.Adapter<note_adapter.Vie
             view.findNavController().navigate(R.id.action_note_list_to_add_note,bundle)
 
         }
+        holder.btn_media.setOnClickListener{view : View ->
+            var bundle = Bundle()
+            bundle.putString("id",p.id.toString())
+            bundle.putString("title",p.title)
+            bundle.putString("window","note_list")
+            view?.findNavController()?.navigate(R.id.action_note_list_to_note_media,bundle)
+        }
+
 
     }
 

@@ -1,8 +1,6 @@
 package com.example.proyecto_notas
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.app.Instrumentation
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,16 +9,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.activity.result.ActivityResult
+import android.widget.AdapterView
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,8 +30,8 @@ import com.example.proyecto_notas.model.Media
 import com.example.proyecto_notas.model.Note
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 import java.io.OutputStream
+
 
 //import com.example.proyecto_notas.databinding.FragmentAddNoteBinding
 
@@ -42,9 +41,15 @@ class Add_note : Fragment() {
     lateinit var rv_media :RecyclerView
     var txt_title : EditText? = null
     var txt_description : EditText? = null
+    var file_description : EditText? = null
     lateinit var sp_note_type: Spinner
     lateinit var outputStream:OutputStream
     lateinit var uri: Uri
+    lateinit var videoUri : Uri
+    lateinit var audioUri : Uri
+    lateinit var genericUri : Uri
+
+
     var id1 : Int  = -1
 
     override fun onCreateView(
@@ -56,7 +61,7 @@ class Add_note : Fragment() {
 
             id1 =-1
 
-
+        file_description = binding.fileDescription
 
         txt_title = binding.edtxtTitle
         txt_description = binding.edtxtDescription
@@ -102,10 +107,20 @@ class Add_note : Fragment() {
 
         }
         binding.btnAddVideo.setOnClickListener{
-            //startForResult.launch(Intent(MediaStore.ACTION_VIDEO_CAPTURE))
+            recordVideo()
+
         }
         binding.btnAddAudio.setOnClickListener{
-            //startForResult.launch(Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION))
+            val intent = Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION)
+            startActivityForResult(intent, 2)
+        }
+        binding.btnAddFile.setOnClickListener{
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "*/*"
+            val mimetypes = arrayOf("image/*", "video/*","audio/*")
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+            startActivityForResult(intent, 111)
         }
 
         binding.btnNext.setOnClickListener{view : View ->
@@ -200,7 +215,132 @@ class Add_note : Fragment() {
 
             }
         }
+
+    fun recordVideo(){
+        val videoFile = createVideoFile()
+
+        if(videoFile!=null){
+
+            videoUri = FileProvider.getUriForFile(
+                this@Add_note.requireActivity(),
+                "com.example.proyecto_notas.fileprovider",
+                videoFile
+            )
+
+
+            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,videoUri)
+            startActivityForResult(intent,1)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==2 && resultCode== RESULT_OK){
+                if (data?.data!=null){
+                    audioUri = data.data!!
+                }
+
+            if(id1==-1){
+                var id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getMaxID()
+                if(id_maximo==0){
+                    id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getLastID()
+
+                }
+
+                var newMedia = Media(id_maximo+1,this.audioUri.toString(),file_description!!.text.toString(),3)
+                noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
+                var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id_maximo+1)
+                rv_media.adapter = media_adapter(media)
+                rv_media.adapter!!.notifyDataSetChanged()
+                media_adapter(media).notifyDataSetChanged()
+            }else{
+
+                var newMedia = Media(id1,this.audioUri.toString(),file_description!!.text.toString(),3)
+                noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
+                var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id1)
+                rv_media.adapter = media_adapter(media)
+                rv_media.adapter!!.notifyDataSetChanged()
+                media_adapter(media).notifyDataSetChanged()
+            }
+
+        }else if(requestCode==1 && resultCode== RESULT_OK){
+            if(id1==-1){
+                var id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getMaxID()
+                if(id_maximo==0){
+                    id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getLastID()
+
+                }
+
+                var newMedia = Media(id_maximo+1,this.videoUri.toString(),file_description!!.text.toString(),2)
+                noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
+                var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id_maximo+1)
+                rv_media.adapter = media_adapter(media)
+                rv_media.adapter!!.notifyDataSetChanged()
+                media_adapter(media).notifyDataSetChanged()
+            }else{
+
+                var newMedia = Media(id1,this.videoUri.toString(),file_description!!.text.toString(),2)
+                noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
+                var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id1)
+                rv_media.adapter = media_adapter(media)
+                rv_media.adapter!!.notifyDataSetChanged()
+                media_adapter(media).notifyDataSetChanged()
+            }
+        }else if (requestCode == 111 && resultCode == RESULT_OK) {
+            genericUri = data?.data!!
+            var type = genericUri.toString().substring(genericUri.toString().length-18,genericUri.toString().length-17)
+            txt_title?.setText(type)
+
+            var intType = 0
+            if(type.equals("i")){
+                intType = 1
+            }else if(type.equals("v")){
+                intType = 2
+            }else{
+                intType = 3
+            }
+            if(id1==-1){
+                var id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getMaxID()
+                if(id_maximo==0){
+                    id_maximo = noteDatabase.getDatabase(requireActivity().applicationContext).noteDao().getLastID()
+
+                }
+
+                var newMedia = Media(id_maximo+1,genericUri.toString(),file_description!!.text.toString(),intType)
+                noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
+                var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id_maximo+1)
+                rv_media.adapter = media_adapter(media)
+                rv_media.adapter!!.notifyDataSetChanged()
+                media_adapter(media).notifyDataSetChanged()
+            }else{
+
+                var newMedia = Media(id1,genericUri.toString(),file_description!!.text.toString(),intType)
+                noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
+                var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id1)
+                rv_media.adapter = media_adapter(media)
+                rv_media.adapter!!.notifyDataSetChanged()
+                media_adapter(media).notifyDataSetChanged()
+            }
+
+
+        }
+
+    }
+
+    private fun createVideoFile():File{
+        val fileName = "MyVideo"
+        val storageDir = this@Add_note.requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            fileName,
+            "mp4",
+            storageDir
+        )
+
+    }
+
     lateinit var file:File
+
     private fun createPhotoFile() {
         val dir = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         file = File.createTempFile("IMG_${System.currentTimeMillis()}_", ".jpg", dir)
@@ -218,7 +358,7 @@ class Add_note : Fragment() {
 
             }
 
-            var newMedia = Media(id_maximo+1,uri.toString(),"Algo")
+            var newMedia = Media(id_maximo+1,uri.toString(),file_description!!.text.toString(),1)
             noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
             var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id_maximo+1)
             rv_media.adapter = media_adapter(media)
@@ -226,7 +366,7 @@ class Add_note : Fragment() {
             media_adapter(media).notifyDataSetChanged()
         }else{
 
-            var newMedia = Media(id1,uri.toString(),"algo")
+            var newMedia = Media(id1,uri.toString(),file_description!!.text.toString(),1)
             noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().insert(newMedia)
             var media = noteDatabase.getDatabase(requireActivity().applicationContext).mediaDao().getAllMedia(id1)
             rv_media.adapter = media_adapter(media)
@@ -261,6 +401,7 @@ class Add_note : Fragment() {
         return uri!!
     }
 
+
     private fun clearContents(content: ContentValues, uri: Uri) {
         content.clear()
         content.put(MediaStore.MediaColumns.IS_PENDING,0)
@@ -270,6 +411,10 @@ class Add_note : Fragment() {
     private fun getBitmap(): Bitmap {
         return BitmapFactory.decodeFile(file.toString())
     }
+
+
+
+
 
 
 

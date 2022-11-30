@@ -9,7 +9,8 @@ data class Media (
     var id: Int,
     var noteID: Int,
     var path: String,
-    var description:String
+    var description:String,
+    var type : Int
 ){
-    constructor(noteID: Int,path: String, description: String) : this(0, noteID, path,description)
+    constructor(noteID: Int,path: String, description: String, type: Int) : this(0, noteID, path,description,type)
 }
