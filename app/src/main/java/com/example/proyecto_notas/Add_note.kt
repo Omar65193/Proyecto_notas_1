@@ -290,7 +290,7 @@ class Add_note : Fragment() {
         }else if (requestCode == 111 && resultCode == RESULT_OK) {
             genericUri = data?.data!!
             var type = genericUri.toString().substring(genericUri.toString().length-18,genericUri.toString().length-17)
-            txt_title?.setText(type)
+
 
             var intType = 0
             if(type.equals("i")){
